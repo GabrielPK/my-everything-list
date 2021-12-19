@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='title') Title:
+      input#title.form-control(type='text' placeholder='Title of work' name='title' required='true' value=(undefined===entry ? '' : entry.title) )
+      label(for='link') Link:
+      input#link.form-control(type='text' placeholder='Link to work' name='link' required='true' value=(undefined===entry ? '' : entry.link))
+    div.form-group
+      label(for='start_date') Date begun:
+      input#start_date.form-control(type='date' name='start_date' required='true' value=(undefined===entry ? '' : entry.start_date) )
+      label(for='end_date') Date finished:
+      input#end_date.form-control(type='date' name='end_date' required='true' value=(undefined===entry ? '' : entry.end_date) )
+    div.form-group
+      label(for='media_type') Media Type:
+      input#media_type.form-control(type='text' placeholder='Book, article, etc.' name='media_type' required='true' value=(undefined===entry ? '' : entry.media_type))
+      label(for='is_fiction') Fiction or Not:
+      input#is_fiction.form-control(type='checkbox' name='is_fiction' required='true' value=(undefined===entry ? '' : entry.is_fiction))
+      label(for='notes') Notes:
+      input#notes.form-control(type='text' placeholder='What you thought about it' name='notes' required='true' value=(undefined===entry ? '' : entry.notes))
+    button.btn.btn-primary(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
