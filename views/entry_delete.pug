@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 #{title}: #{entry.name}
+  p= entry.lifespan
+
+    p Do you really want to delete this Entry?
+
+    form(method='POST' action='')
+      div.form-group
+        input#entryid.form-control(type='hidden',name='entryid', required='true', value=entry._id )
+
+      button.btn.btn-primary(type='submit') Delete

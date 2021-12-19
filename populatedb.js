@@ -51,13 +51,13 @@ function createEntries(cb) {
   async.series([
       function(callback) {
         entryCreate(
-          "Neuromancer", 
-          "https://www.amazon.com/William-Gibson-Neuromancer-Market-Paperback/dp/B07J2CM5DF/ref=sr_1_3?dchild=1&keywords=neuromancer&qid=1625707699&sr=8-3", 
-          "2021-06-28", 
-          "2021-07-14", 
-          "book",
+          "Understand", 
+          "https://web.archive.org/web/20060107000905/http://www.infinityplus.co.uk/stories/under.htm", 
+          "2021-07-04", 
+          "2021-07-05", 
+          "article",
           true,
-          "fun cyberpunk scifi novel, not sure I can appreciate it fully since I'm already accustomed to cyberpunk stuff, but fun nonetheless",
+          "short story about a guy who gets a drug to increase his intelligence; he has (maybe not quite) delusions of grandeur and ends up battling another who got the drug and losing",
           callback);
       },
       ],

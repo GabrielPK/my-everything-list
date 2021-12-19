@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+    each entry in entry_list
+      li
+        a(href=entry.url) #{entry.title}
+
+    else
+      li There are no entries.

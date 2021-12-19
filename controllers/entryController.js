@@ -1,14 +1,31 @@
 var Entry = require('../models/entry');
+var async = require('async');
 const { body,validationResult } = require("express-validator");
 
 exports.index = function(req, res) {
-	res.send('NOT IMPLEMENTED: Site Home Page');
+
+    async.parallel({
+        entry_count: function(callback) {
+            Entry.countDocuments({}, callback); // Pass an empty object as match condition to find all documents of this collection
+        },
+    }, function(err, results) {
+        res.render('index', { title: 'MEL Home', error: err, data: results });
+    });
 };
 
 // Display list of all entries
-exports.entry_list = function(req, res) {
-	res.send('NOT IMPLEMENTED: Entry list');
-};
+exports.entry_list = function(req, res, next) {
+
+    Entry.find({}, 'title author')
+      .sort({title : 1})
+      .populate('title')
+      .exec(function (err, list_entries) {
+        if (err) { return next(err); }
+        //Successful, so render
+        res.render('entry_list', { title: 'Entry List', entry_list: list_entries });
+      });
+  
+  };
 
 // Display detail page for a specific entry
 exports.entry_detail = function(req, res) {
@@ -57,9 +74,9 @@ exports.entry_create_post = [
                     is_fiction: req.body.is_fiction, 
                     notes: req.body.notes
                 });
-            author.save(function (err) {
+                entry.save(function (err) {
                 if (err) { return next(err); }
-                // Successful - redirect to new author record.
+                // Successful - redirect to new entry record.
                 res.redirect(entry.url);
             });
         }
@@ -67,13 +84,41 @@ exports.entry_create_post = [
 ];
 
 // Display entry delete form on GET.
-exports.entry_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Entry delete GET');
+exports.entry_delete_get = function(req, res, next) {
+
+    async.parallel({
+        entry: function(callback) {
+            Entry.findById(req.params.id).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.entry==null) { // No results.
+            res.redirect('/catalog/entries');
+        }
+        // Successful, so render.
+        res.render('entry_delete', { title: 'Delete Entry', entry: results.entry, } );
+    });
+
 };
 
 // Handle entry delete on POST.
-exports.entry_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Entry delete POST');
+exports.entry_delete_post = function(req, res, next) {
+
+    async.parallel({
+        entry: function(callback) {
+          Entry.findById(req.body.entryid).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        else {
+            // Delete object and redirect to the list of entries.
+            Entry.findByIdAndRemove(req.body.entryid, function deleteEntry(err) {
+                if (err) { return next(err); }
+                // Success - go to entry list
+                res.redirect('/catalog/entries')
+            })
+        }
+    });
 };
 
 // Display entry update form on GET.
