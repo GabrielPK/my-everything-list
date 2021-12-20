@@ -1,3 +1,12 @@
-hr
-p
-  a(href=entry.url+'/delete') Delete entry
+extends layout
+
+block content
+  h1 Title: #{title}
+
+  p #[strong Link:] #{link}
+  p #[strong Start Date:] #{start_date}
+  p #[strong Finish Date:] #{finish_date}
+  p #[strong Media Type:] #{media_type}
+  p #[strong Fiction?:] #{is_fiction}
+  p #[strong Notes:] #{notes}
+

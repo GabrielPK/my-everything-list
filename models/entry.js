@@ -1,3 +1,4 @@
+const { DateTime } = require("luxon");
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -16,7 +17,19 @@ var entrySchema = new Schema(
 entrySchema
 .virtual('url')
 .get(function () {
-	return '/entries/' + this._id;
+	return '/catalog/entry/' + this._id;
+});
+
+entrySchema
+.virtual('start_date_formatted')
+.get(function () {
+  return DateTime.fromJSDate(this.start_date).toLocaleString(DateTime.DATE_MED);
+});
+
+entrySchema
+.virtual('finish_date_formatted')
+.get(function () {
+  return DateTime.fromJSDate(this.finish_date).toLocaleString(DateTime.DATE_MED);
 });
 
 module.exports = mongoose.model('Entry', entrySchema);

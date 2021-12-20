@@ -28,8 +28,39 @@ exports.entry_list = function(req, res, next) {
   };
 
 // Display detail page for a specific entry
-exports.entry_detail = function(req, res) {
-	res.send('NOT IMPLEMENTED: Entry detail: ' + req.paramas.id);
+exports.entry_detail = function(req, res, next) {
+
+    async.parallel({
+        entry: function(callback) {
+
+            Entry.findById(req.params.id)
+              .populate('title')
+              .populate('link')
+              .populate('start_date')
+              .populate('finish_date')
+              .populate('media_type')
+              .populate('is_fiction')
+              .populate('notes')
+              .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.entry==null) { // No results.
+            var err = new Error('Book not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful, so render.
+        res.render('entry_detail', { 
+            title: results.entry.title, 
+            link: results.entry.link, 
+            start_date: results.entry.start_date_formatted, 
+            finish_date: results.entry.finish_date_formatted, 
+            media_type: results.entry.media_type, 
+            is_fiction: results.entry.is_fiction, 
+            notes: results.entry.notes, } );
+    });
+
 };
 
 // Display entry create form on GET 
